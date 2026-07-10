@@ -1,0 +1,36 @@
+# === Backend (Spring Boot / Java) ===
+backend/target/
+backend/*.jar
+backend/*.war
+backend/*.class
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# === Frontend (React / Node) ===
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.production
+
+# === IDE ===
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Environment ===
+.env
+*.env.local
+
+# === Logs ===
+*.log
+npm-debug.log*
+
+# === IDE Output ===
+out/
+

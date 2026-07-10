@@ -13,6 +13,6 @@ class CarDealershipApplicationTests {
 
 	@Test
 	void contextLoads() {
-		// Verifies that the Spring application context starts without errors
+
 	}
 }
