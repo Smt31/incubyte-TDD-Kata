@@ -10,6 +10,7 @@ export default function DashboardPage() {
   // State
   const [vehicles, setVehicles] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
+  const [editingVehicleId, setEditingVehicleId] = useState(null)
   const [restockInputs, setRestockInputs] = useState({})
   const [form, setForm] = useState({
     vin: '',
@@ -62,7 +63,42 @@ export default function DashboardPage() {
     setError('')
   }
 
-  // Create vehicle
+  // Handle click on Edit
+  const handleEditClick = (v) => {
+    setEditingVehicleId(v.id)
+    setForm({
+      vin: v.vin,
+      make: v.make,
+      model: v.model,
+      year: v.year,
+      price: v.price,
+      description: v.description || '',
+      imageUrl: v.imageUrl || '',
+      category: v.category || '',
+      quantity: v.quantity,
+    })
+    setShowAddModal(true)
+  }
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    setShowAddModal(false)
+    setEditingVehicleId(null)
+    setForm({
+      vin: '',
+      make: '',
+      model: '',
+      year: '',
+      price: '',
+      description: '',
+      imageUrl: '',
+      category: '',
+      quantity: 1,
+    })
+    setError('')
+  }
+
+  // Create or Update vehicle
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -112,22 +148,18 @@ export default function DashboardPage() {
         quantity: qtyVal,
       }
 
-      const res = await vehicleApi.create(payload)
-      setVehicles([...vehicles, res.data])
-      setShowAddModal(false)
-      setForm({
-        vin: '',
-        make: '',
-        model: '',
-        year: '',
-        price: '',
-        description: '',
-        imageUrl: '',
-        category: '',
-        quantity: 1,
-      })
+      if (editingVehicleId) {
+        const res = await vehicleApi.update(editingVehicleId, payload)
+        setVehicles(vehicles.map((v) => (v.id === editingVehicleId ? res.data : v)))
+        showNotification('Vehicle updated successfully!', 'success')
+      } else {
+        const res = await vehicleApi.create(payload)
+        setVehicles([...vehicles, res.data])
+        showNotification('Vehicle added to catalog successfully!', 'success')
+      }
+      handleCloseModal()
     } catch (err) {
-      const serverMsg = err.response?.data?.message || 'Failed to add vehicle'
+      const serverMsg = err.response?.data?.message || (editingVehicleId ? 'Failed to update vehicle' : 'Failed to add vehicle')
       setError(serverMsg)
     }
   }
@@ -311,6 +343,9 @@ export default function DashboardPage() {
 
                       {isAdmin && (
                         <div className="admin-actions-row">
+                          <button className="btn-fleet-edit" onClick={() => handleEditClick(v)}>
+                            Edit
+                          </button>
                           <button className="btn-fleet-delete" onClick={() => handleDelete(v.id)}>
                             Delete
                           </button>
@@ -343,8 +378,8 @@ export default function DashboardPage() {
         <div className="modal-overlay">
           <div className="modal-container">
             <div className="modal-header">
-              <h3>Catalog New Luxury Vehicle</h3>
-              <button className="modal-close-btn" onClick={() => setShowAddModal(false)}>×</button>
+              <h3>{editingVehicleId ? 'Update Luxury Vehicle' : 'Catalog New Luxury Vehicle'}</h3>
+              <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
             </div>
             <form onSubmit={handleSubmit} className="modal-form">
               {error && <div className="auth-error-box">{error}</div>}
@@ -466,11 +501,11 @@ export default function DashboardPage() {
               </div>
 
               <div className="modal-footer">
-                <button type="button" className="btn-modal-cancel" onClick={() => setShowAddModal(false)}>
+                <button type="button" className="btn-modal-cancel" onClick={handleCloseModal}>
                   Cancel
                 </button>
                 <button type="submit" className="btn-modal-submit">
-                  Save Vehicle
+                  {editingVehicleId ? 'Save Changes' : 'Save Vehicle'}
                 </button>
               </div>
             </form>

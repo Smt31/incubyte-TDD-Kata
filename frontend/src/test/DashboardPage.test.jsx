@@ -304,4 +304,73 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
       expect(screen.getByText(/15 units/i)).toBeInTheDocument()
     })
   })
+
+  it('allows ADMIN to edit a vehicle and updates the list', async () => {
+    const mockVehicle = {
+      id: 1,
+      vin: '1HGCR2F83JA123456',
+      make: 'Porsche',
+      model: '911',
+      year: 2023,
+      price: 120000.0,
+      description: 'VeloDrive Luxury Collection',
+      imageUrl: '',
+      category: 'Luxury',
+      quantity: 5,
+    }
+    vehicleApi.getAll.mockResolvedValueOnce({ data: [mockVehicle] })
+
+    const mockUpdated = { ...mockVehicle, model: '911 Turbo S', price: 210000.0 }
+    vehicleApi.update.mockResolvedValueOnce({ data: mockUpdated })
+
+    localStorage.setItem('user', JSON.stringify({ name: 'Admin Manager', role: 'ADMIN', email: 'admin@velodrive.com' }))
+    localStorage.setItem('token', 'mock-admin-token')
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <DashboardPage />
+        </AuthProvider>
+      </MemoryRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Porsche 911/i)).toBeInTheDocument()
+    })
+
+    // Edit button should be visible for ADMIN
+    const editBtn = screen.getByRole('button', { name: /Edit/i })
+    expect(editBtn).toBeInTheDocument()
+
+    // Click to open Modal in edit mode
+    fireEvent.click(editBtn)
+
+    // Form fields should be pre-filled
+    expect(screen.getByPlaceholderText(/VIN/i).value).toBe('1HGCR2F83JA123456')
+    expect(screen.getByPlaceholderText(/Make/i).value).toBe('Porsche')
+    expect(screen.getByPlaceholderText(/Model/i).value).toBe('911')
+
+    // Change model and price
+    fireEvent.change(screen.getByPlaceholderText(/Model/i), { target: { value: '911 Turbo S' } })
+    fireEvent.change(screen.getByPlaceholderText(/Price/i), { target: { value: '210000' } })
+
+    // Click save changes
+    const saveBtn = screen.getByRole('button', { name: /Save Changes/i })
+    fireEvent.click(saveBtn)
+
+    await waitFor(() => {
+      expect(vehicleApi.update).toHaveBeenCalledWith(1, {
+        vin: '1HGCR2F83JA123456',
+        make: 'Porsche',
+        model: '911 Turbo S',
+        year: 2023,
+        price: 210000.0,
+        description: 'VeloDrive Luxury Collection',
+        imageUrl: '',
+        category: 'Luxury',
+        quantity: 5,
+      })
+      expect(screen.getByText(/Porsche 911 Turbo S/i)).toBeInTheDocument()
+    })
+  })
 })

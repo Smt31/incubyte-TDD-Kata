@@ -710,6 +710,26 @@ body {
   padding-top: 12px;
 }
 
+.btn-fleet-edit {
+  background-color: transparent;
+  border: 1px solid rgba(223, 186, 115, 0.4);
+  color: var(--accent-gold);
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: var(--transition);
+}
+
+.btn-fleet-edit:hover {
+  background-color: var(--accent-gold);
+  color: #121214;
+  border-color: var(--accent-gold);
+}
+
 .btn-fleet-delete {
   background-color: transparent;
   border: 1px solid rgba(239, 68, 68, 0.4);
