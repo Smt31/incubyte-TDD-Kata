@@ -29,6 +29,26 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles duplicate vehicle VIN registration errors.
+     */
+    @ExceptionHandler(VehicleAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleVehicleAlreadyExistsException(VehicleAlreadyExistsException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles vehicle not found errors with 404 Not Found.
+     */
+    @ExceptionHandler(VehicleNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleVehicleNotFoundException(VehicleNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    /**
      * Handles invalid login credentials with 401 Unauthorized.
      * Generic message prevents user enumeration attacks.
      */

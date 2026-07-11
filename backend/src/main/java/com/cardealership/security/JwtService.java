@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
- * Service responsible for generating JWT tokens.
+ * Service responsible for generating and parsing JWT tokens.
  * Uses HS256 algorithm with a configurable secret and expiration from application.properties.
  */
 @Service
@@ -35,8 +35,37 @@ public class JwtService {
     }
 
     /**
+     * Extracts the user email (subject) from the JWT token.
+     */
+    public String extractEmail(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
+
+    /**
+     * Validates if the token is for the given email and has not expired.
+     */
+    public boolean isTokenValid(String token, String email) {
+        final String extractedEmail = extractEmail(token);
+        return (extractedEmail.equals(email) && !isTokenExpired(token));
+    }
+
+    private boolean isTokenExpired(String token) {
+        Date expiration = Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
+        return expiration.before(new Date());
+    }
+
+    /**
      * Derives the HMAC-SHA256 signing key from the configured secret.
-     * Extracted as a helper to keep generateToken() clean and readable.
      */
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
