@@ -178,6 +178,22 @@ public class AuthControllerTest {
     }
 
     @Test
+    void shouldAssignCustomRoleAdmin() throws Exception {
+        RegisterRequest request = RegisterRequest.builder()
+                .email("admin@example.com")
+                .password("password123")
+                .name("Admin User")
+                .role("ADMIN")
+                .build();
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.role").value("ADMIN"));
+    }
+
+    @Test
     void shouldHashPasswordBeforeSaving() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("hash@example.com")
@@ -285,5 +301,20 @@ public class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldRejectPasswordWithoutComplexity() throws Exception {
+        RegisterRequest request = RegisterRequest.builder()
+                .email("complex@example.com")
+                .password("simplepassword") // length 14, but no number or uppercase
+                .name("Complex User")
+                .build();
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.password").value("Password must contain at least one uppercase letter and one number"));
     }
 }

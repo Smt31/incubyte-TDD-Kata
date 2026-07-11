@@ -155,4 +155,18 @@ public class LoginControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.password").exists());
     }
+
+    @Test
+    void shouldRejectShortPasswordOnLogin() throws Exception {
+        LoginRequest request = LoginRequest.builder()
+                .email("user@example.com")
+                .password("123")
+                .build();
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.password").value("Password must be at least 6 characters long"));
+    }
 }
