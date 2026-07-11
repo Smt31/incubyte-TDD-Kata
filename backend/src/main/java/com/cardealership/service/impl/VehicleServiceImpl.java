@@ -10,6 +10,9 @@ import com.cardealership.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import com.cardealership.exception.VehicleOutOfStockException;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +87,36 @@ public class VehicleServiceImpl implements VehicleService {
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with ID: " + id));
         vehicleRepository.delete(vehicle);
+    }
+
+    @Override
+    @Transactional
+    public VehicleResponse purchaseVehicle(Long id) {
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with ID: " + id));
+
+        if (vehicle.getQuantity() <= 0) {
+            throw new VehicleOutOfStockException("Vehicle is out of stock");
+        }
+
+        vehicle.setQuantity(vehicle.getQuantity() - 1);
+        Vehicle saved = vehicleRepository.save(vehicle);
+        return mapToResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public VehicleResponse restockVehicle(Long id, Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be at least 1");
+        }
+
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with ID: " + id));
+
+        vehicle.setQuantity(vehicle.getQuantity() + quantity);
+        Vehicle saved = vehicleRepository.save(vehicle);
+        return mapToResponse(saved);
     }
 
     private VehicleResponse mapToResponse(Vehicle vehicle) {

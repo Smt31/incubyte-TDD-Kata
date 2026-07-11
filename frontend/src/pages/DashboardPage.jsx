@@ -10,6 +10,7 @@ export default function DashboardPage() {
   // State
   const [vehicles, setVehicles] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
+  const [restockInputs, setRestockInputs] = useState({})
   const [form, setForm] = useState({
     vin: '',
     make: '',
@@ -18,6 +19,8 @@ export default function DashboardPage() {
     price: '',
     description: '',
     imageUrl: '',
+    category: '',
+    quantity: 1,
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -77,6 +80,15 @@ export default function DashboardPage() {
       setError('Price must be greater than zero')
       return
     }
+    if (!form.category.trim()) {
+      setError('Category is required')
+      return
+    }
+    const qtyVal = parseInt(form.quantity)
+    if (isNaN(qtyVal) || qtyVal < 0) {
+      setError('Quantity cannot be negative')
+      return
+    }
 
     try {
       const payload = {
@@ -87,6 +99,8 @@ export default function DashboardPage() {
         price: priceVal,
         description: form.description.trim(),
         imageUrl: form.imageUrl.trim(),
+        category: form.category.trim(),
+        quantity: qtyVal,
       }
 
       const res = await vehicleApi.create(payload)
@@ -100,11 +114,45 @@ export default function DashboardPage() {
         price: '',
         description: '',
         imageUrl: '',
+        category: '',
+        quantity: 1,
       })
     } catch (err) {
       const serverMsg = err.response?.data?.message || 'Failed to add vehicle'
       setError(serverMsg)
     }
+  }
+
+  // Purchase vehicle
+  const handlePurchase = async (id) => {
+    try {
+      const res = await vehicleApi.purchase(id)
+      setVehicles(vehicles.map((v) => (v.id === id ? res.data : v)))
+    } catch (err) {
+      alert(err.response?.data?.message || 'Purchase failed')
+    }
+  }
+
+  // Restock vehicle
+  const handleRestock = async (id) => {
+    const amount = restockInputs[id]
+    const parsedAmount = parseInt(amount)
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      alert('Please enter a restock quantity of 1 or more')
+      return
+    }
+
+    try {
+      const res = await vehicleApi.restock(id, parsedAmount)
+      setVehicles(vehicles.map((v) => (v.id === id ? res.data : v)))
+      setRestockInputs({ ...restockInputs, [id]: '' })
+    } catch (err) {
+      alert(err.response?.data?.message || 'Restock failed')
+    }
+  }
+
+  const handleRestockInputChange = (id, val) => {
+    setRestockInputs({ ...restockInputs, [id]: val })
   }
 
   // Delete vehicle
@@ -205,14 +253,41 @@ export default function DashboardPage() {
                     <p className="fleet-card-desc">{v.description || 'No description cataloged for this model.'}</p>
                     <div className="fleet-card-meta">
                       <span>VIN: <code>{v.vin}</code></span>
+                      <span>Category: <strong style={{ color: '#dfba73' }}>{v.category}</strong></span>
+                      <span>Stock: <strong style={{ color: v.quantity > 0 ? '#52c41a' : '#ff4d4f' }}>
+                        {v.quantity > 0 ? `${v.quantity} units` : 'Out of Stock'}
+                      </strong></span>
                     </div>
-                    {isAdmin && (
-                      <div className="fleet-card-actions">
-                        <button className="btn-fleet-delete" onClick={() => handleDelete(v.id)}>
-                          Delete
-                        </button>
-                      </div>
-                    )}
+                    <div className="fleet-card-actions">
+                      <button 
+                        className="btn-fleet-purchase" 
+                        onClick={() => handlePurchase(v.id)} 
+                        disabled={v.quantity <= 0}
+                      >
+                        {v.quantity > 0 ? 'Purchase' : 'Out of Stock'}
+                      </button>
+                      
+                      {isAdmin && (
+                        <div className="admin-actions-row">
+                          <button className="btn-fleet-delete" onClick={() => handleDelete(v.id)}>
+                            Delete
+                          </button>
+                          <div className="restock-control">
+                            <input
+                              type="number"
+                              min="1"
+                              placeholder="Qty"
+                              value={restockInputs[v.id] || ''}
+                              onChange={(e) => handleRestockInputChange(v.id, e.target.value)}
+                              className="restock-input"
+                            />
+                            <button className="btn-fleet-restock" onClick={() => handleRestock(v.id)}>
+                              Restock
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -295,6 +370,32 @@ export default function DashboardPage() {
                     onChange={handleInputChange}
                     step="0.01"
                     min="0.01"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group-row-2col">
+                <div className="form-input-group">
+                  <label>Category</label>
+                  <input
+                    type="text"
+                    name="category"
+                    placeholder="e.g. SUV, Sedan, Coupe"
+                    value={form.category}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="form-input-group">
+                  <label>Initial Stock Quantity</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    placeholder="Initial Stock"
+                    value={form.quantity}
+                    onChange={handleInputChange}
+                    min="0"
                     required
                   />
                 </div>

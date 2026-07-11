@@ -11,4 +11,6 @@ public interface VehicleService {
     VehicleResponse getVehicleById(Long id);
     VehicleResponse updateVehicle(Long id, VehicleRequest request);
     void deleteVehicle(Long id);
+    VehicleResponse purchaseVehicle(Long id);
+    VehicleResponse restockVehicle(Long id, Integer quantity);
 }

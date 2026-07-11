@@ -31,6 +31,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(VehicleOutOfStockException.class)
+    public ResponseEntity<Map<String, String>> handleVehicleOutOfStockException(VehicleOutOfStockException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     /**
      * Handles vehicle not found errors with 404 Not Found.
      */

@@ -639,27 +639,71 @@ body {
 
 .fleet-card-meta {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-gray);
   border-top: 1px solid var(--border-color);
   padding-top: 12px;
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .fleet-card-meta code {
-  color: var(--text-gray);
+  color: var(--text-white);
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
 }
 
 .fleet-card-actions {
   margin-top: 16px;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-fleet-purchase {
+  width: 100%;
+  background-color: var(--accent-gold);
+  color: #121214;
+  border: none;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.btn-fleet-purchase:hover:not(:disabled) {
+  background-color: var(--accent-gold-hover);
+  transform: translateY(-0.5px);
+}
+
+.btn-fleet-purchase:disabled {
+  background-color: #27272a;
+  color: #71717a;
+  cursor: not-allowed;
+}
+
+.admin-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 12px;
 }
 
 .btn-fleet-delete {
   background-color: transparent;
   border: 1px solid rgba(239, 68, 68, 0.4);
   color: #ef4444;
-  padding: 6px 14px;
+  padding: 8px 14px;
   font-size: 11px;
   font-weight: 700;
   border-radius: var(--radius-sm);
@@ -673,6 +717,47 @@ body {
   background-color: #ef4444;
   color: #ffffff;
   border-color: #ef4444;
+}
+
+.restock-control {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.restock-input {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-white);
+  padding: 7px 8px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  width: 65px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.restock-input:focus {
+  border-color: var(--accent-gold);
+}
+
+.btn-fleet-restock {
+  background-color: transparent;
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: var(--transition);
+}
+
+.btn-fleet-restock:hover {
+  background-color: var(--accent-gold);
+  color: #121214;
 }
 
 /* ===================================================

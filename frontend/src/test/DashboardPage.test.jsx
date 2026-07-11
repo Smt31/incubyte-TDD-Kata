@@ -21,6 +21,8 @@ vi.mock('../services/api', () => ({
     create: vi.fn().mockResolvedValue({ data: {} }),
     update: vi.fn().mockResolvedValue({ data: {} }),
     delete: vi.fn().mockResolvedValue({ data: {} }),
+    purchase: vi.fn().mockResolvedValue({ data: {} }),
+    restock: vi.fn().mockResolvedValue({ data: {} }),
   }
 }))
 
@@ -42,6 +44,8 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
         price: 225000.0,
         description: 'VeloDrive Luxury Collection',
         imageUrl: '',
+        category: 'Luxury',
+        quantity: 5,
       }
     ]
     vehicleApi.getAll.mockResolvedValueOnce({ data: mockVehicles })
@@ -101,6 +105,8 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
     fireEvent.change(screen.getByPlaceholderText(/Model/i), { target: { value: 'Aventador' } })
     fireEvent.change(screen.getByPlaceholderText(/Year/i), { target: { value: '2022' } })
     fireEvent.change(screen.getByPlaceholderText(/Price/i), { target: { value: '380000' } })
+    fireEvent.change(screen.getByPlaceholderText(/SUV, Sedan, Coupe/i), { target: { value: 'Luxury' } })
+    fireEvent.change(screen.getByPlaceholderText(/Initial Stock/i), { target: { value: '5' } })
 
     const mockCreated = {
       id: 2,
@@ -109,6 +115,8 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
       model: 'Aventador',
       year: 2022,
       price: 380000.0,
+      category: 'Luxury',
+      quantity: 5,
     }
     vehicleApi.create.mockResolvedValueOnce({ data: mockCreated })
 
@@ -125,6 +133,8 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
         price: 380000.0,
         description: '',
         imageUrl: '',
+        category: 'Luxury',
+        quantity: 5,
       })
     })
   })
@@ -138,6 +148,8 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
         model: '911',
         year: 2023,
         price: 120000.0,
+        category: 'Luxury',
+        quantity: 5,
       }
     ]
     vehicleApi.getAll.mockResolvedValueOnce({ data: mockVehicles })
@@ -164,6 +176,132 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
 
     await waitFor(() => {
       expect(vehicleApi.delete).toHaveBeenCalledWith(1)
+    })
+  })
+
+  it('allows normal USER to purchase a vehicle and decreases stock', async () => {
+    const mockVehicle = {
+      id: 1,
+      vin: '1HGCR2F83JA123456',
+      make: 'Porsche',
+      model: '911',
+      year: 2023,
+      price: 120000.0,
+      category: 'Luxury',
+      quantity: 5,
+    }
+    vehicleApi.getAll.mockResolvedValueOnce({ data: [mockVehicle] })
+
+    const mockPurchased = { ...mockVehicle, quantity: 4 }
+    vehicleApi.purchase.mockResolvedValueOnce({ data: mockPurchased })
+
+    localStorage.setItem('user', JSON.stringify({ name: 'Client User', role: 'USER', email: 'client@velodrive.com' }))
+    localStorage.setItem('token', 'mock-user-token')
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <DashboardPage />
+        </AuthProvider>
+      </MemoryRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Porsche 911/i)).toBeInTheDocument()
+    })
+
+    // Purchase button should be active and display stock
+    expect(screen.getByText(/5 units/i)).toBeInTheDocument()
+    const purchaseBtn = screen.getByRole('button', { name: /Purchase/i })
+    expect(purchaseBtn).toBeEnabled()
+
+    // Perform purchase
+    fireEvent.click(purchaseBtn)
+
+    await waitFor(() => {
+      expect(vehicleApi.purchase).toHaveBeenCalledWith(1)
+      expect(screen.getByText(/4 units/i)).toBeInTheDocument()
+    })
+  })
+
+  it('disables Purchase button when stock is 0', async () => {
+    const mockVehicle = {
+      id: 1,
+      vin: '1HGCR2F83JA123456',
+      make: 'Porsche',
+      model: '911',
+      year: 2023,
+      price: 120000.0,
+      category: 'Luxury',
+      quantity: 0,
+    }
+    vehicleApi.getAll.mockResolvedValueOnce({ data: [mockVehicle] })
+
+    localStorage.setItem('user', JSON.stringify({ name: 'Client User', role: 'USER', email: 'client@velodrive.com' }))
+    localStorage.setItem('token', 'mock-user-token')
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <DashboardPage />
+        </AuthProvider>
+      </MemoryRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Porsche 911/i)).toBeInTheDocument()
+    })
+
+    expect(screen.getAllByText(/Out of Stock/i).length).toBeGreaterThan(0)
+    const purchaseBtn = screen.getByRole('button', { name: /Out of Stock/i })
+    expect(purchaseBtn).toBeDisabled()
+  })
+
+  it('allows ADMIN to restock a vehicle and increases stock', async () => {
+    const mockVehicle = {
+      id: 1,
+      vin: '1HGCR2F83JA123456',
+      make: 'Porsche',
+      model: '911',
+      year: 2023,
+      price: 120000.0,
+      category: 'Luxury',
+      quantity: 5,
+    }
+    vehicleApi.getAll.mockResolvedValueOnce({ data: [mockVehicle] })
+
+    const mockRestocked = { ...mockVehicle, quantity: 15 }
+    vehicleApi.restock.mockResolvedValueOnce({ data: mockRestocked })
+
+    localStorage.setItem('user', JSON.stringify({ name: 'Admin Manager', role: 'ADMIN', email: 'admin@velodrive.com' }))
+    localStorage.setItem('token', 'mock-admin-token')
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <DashboardPage />
+        </AuthProvider>
+      </MemoryRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Porsche 911/i)).toBeInTheDocument()
+    })
+
+    // Restock control should be present for admin
+    const restockInput = screen.getByPlaceholderText(/Qty/i)
+    const restockBtn = screen.getByRole('button', { name: /Restock/i })
+
+    expect(restockInput).toBeInTheDocument()
+    expect(restockBtn).toBeInTheDocument()
+
+    // Fill restock quantity
+    fireEvent.change(restockInput, { target: { value: '10' } })
+    fireEvent.click(restockBtn)
+
+    await waitFor(() => {
+      expect(vehicleApi.restock).toHaveBeenCalledWith(1, 10)
+      expect(screen.getByText(/15 units/i)).toBeInTheDocument()
     })
   })
 })

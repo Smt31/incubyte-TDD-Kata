@@ -38,6 +38,8 @@ export const vehicleApi = {
   create: (data) => api.post('/vehicles', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
   delete: (id) => api.delete(`/vehicles/${id}`),
+  purchase: (id) => api.post(`/vehicles/${id}/purchase`),
+  restock: (id, quantity) => api.post(`/vehicles/${id}/restock`, { quantity }),
 }
 
 export default api
