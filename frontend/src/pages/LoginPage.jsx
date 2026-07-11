@@ -158,7 +158,7 @@ export default function LoginPage() {
 
       {/* Switch to Register */}
       <p className="footer-text">
-        New to VeloDrive? <Link to="/register" className="footer-link">Request an invite</Link>
+        New to VeloDrive? <Link to="/register" className="footer-link">Register</Link>
       </p>
     </div>
   )
