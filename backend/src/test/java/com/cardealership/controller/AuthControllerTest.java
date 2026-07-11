@@ -50,7 +50,7 @@ public class AuthControllerTest {
     void shouldRegisterUserWithValidData() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("valid@example.com")
-                .password("password123")
+                .password("Password123")
                 .name("Valid User")
                 .build();
 
@@ -68,7 +68,7 @@ public class AuthControllerTest {
         // Pre-save existing user
         User existingUser = User.builder()
                 .email("duplicate@example.com")
-                .password(passwordEncoder.encode("password123"))
+                .password(passwordEncoder.encode("Password123"))
                 .name("Existing User")
                 .role("USER")
                 .build();
@@ -76,7 +76,7 @@ public class AuthControllerTest {
 
         RegisterRequest request = RegisterRequest.builder()
                 .email("duplicate@example.com")
-                .password("password123")
+                .password("Password123")
                 .name("New User")
                 .build();
 
@@ -91,7 +91,7 @@ public class AuthControllerTest {
     void shouldRejectBlankEmail() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email(" ")
-                .password("password123")
+                .password("Password123")
                 .name("Name")
                 .build();
 
@@ -106,7 +106,7 @@ public class AuthControllerTest {
     void shouldRejectInvalidEmailFormat() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("invalid-email")
-                .password("password123")
+                .password("Password123")
                 .name("Name")
                 .build();
 
@@ -136,7 +136,7 @@ public class AuthControllerTest {
     void shouldRejectShortPassword() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("valid@example.com")
-                .password("12345") // Less than 6 characters
+                .password("Ab123") // Less than 6 characters, but contains uppercase and digit
                 .name("Name")
                 .build();
 
@@ -151,7 +151,7 @@ public class AuthControllerTest {
     void shouldRejectBlankName() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("valid@example.com")
-                .password("password123")
+                .password("Password123")
                 .name(" ")
                 .build();
 
@@ -166,7 +166,7 @@ public class AuthControllerTest {
     void shouldAssignDefaultUSERRole() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("role@example.com")
-                .password("password123")
+                .password("Password123")
                 .name("Role User")
                 .build();
 
@@ -181,7 +181,7 @@ public class AuthControllerTest {
     void shouldAssignCustomRoleAdmin() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("admin@example.com")
-                .password("password123")
+                .password("Password123")
                 .name("Admin User")
                 .role("ADMIN")
                 .build();
@@ -218,7 +218,7 @@ public class AuthControllerTest {
     void shouldNotReturnPasswordInResponse() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("nopass@example.com")
-                .password("password123")
+                .password("Password123")
                 .name("No Pass User")
                 .build();
 
@@ -233,7 +233,7 @@ public class AuthControllerTest {
     void shouldSaveUserInDatabase() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("db@example.com")
-                .password("password123")
+                .password("Password123")
                 .name("DB User")
                 .build();
 
@@ -286,7 +286,7 @@ public class AuthControllerTest {
     void shouldReturnCorrectHttpStatusCodes() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("http@example.com")
-                .password("password123")
+                .password("Password123")
                 .name("HTTP User")
                 .build();
 

@@ -1,111 +1,490 @@
+/* ===================================================
+   VELODRIVE PREMIUM LUXURY DARK THEME — DESIGN SYSTEM
+   =================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --bg-page: #09090b;
+  --bg-card: #121214;
+  --bg-input: #0a0a0c;
+  
+  --accent-gold: #dfba73;
+  --accent-gold-hover: #d2ac62;
+  
+  --text-white: #ffffff;
+  --text-gray: #a1a1aa;
+  --text-muted: #52525b;
+  
+  --border-color: #1c1c1f;
+  --border-focus: #dfba73;
+  
+  --error-color: #ef4444;
+  --success-color: #10b981;
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  
+  --font-serif: 'Playfair Display', 'Georgia', serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* ===================================================
+   RESET & BASE STYLES
+   =================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--text-white);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+/* ===================================================
+   VELODRIVE AUTH CONTAINER
+   =================================================== */
+.velodrive-container {
+  width: 100%;
+  max-width: 460px;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  align-items: center;
+  padding: 40px 20px;
+  animation: fadeIn 0.6s ease-out;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===================================================
+   BRAND LOGO & SUBTITLE
+   =================================================== */
+.velodrive-brand {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.velodrive-title {
+  font-family: var(--font-serif);
+  font-size: 40px;
   font-weight: 500;
-  color: var(--text-h);
+  color: var(--text-white);
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  background: linear-gradient(180deg, #ffffff 0%, #d4d4d8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+.velodrive-subtitle {
+  font-size: 13px;
+  color: var(--text-gray);
+  letter-spacing: 0.5px;
+  font-weight: 400;
 }
-h2 {
+
+/* ===================================================
+   VELODRIVE LOGIN CARD
+   =================================================== */
+.velodrive-card {
+  width: 100%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 40px 36px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.velodrive-card-header {
+  margin-bottom: 28px;
+}
+
+.velodrive-card-title {
+  font-family: var(--font-serif);
   font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+  font-weight: 600;
+  color: var(--text-white);
+  margin-bottom: 8px;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.velodrive-card-desc {
+  font-size: 13px;
+  color: var(--text-gray);
+  line-height: 1.5;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* ===================================================
+   FORM ELEMENTS
+   =================================================== */
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--text-white);
+  text-transform: uppercase;
+}
+
+.forgot-link {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--text-gray);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: var(--transition);
+}
+
+.forgot-link:hover {
+  color: var(--accent-gold);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.form-input {
+  width: 100%;
+  padding: 13px 14px 13px 40px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-white);
+  font-size: 13.5px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-input:focus {
+  border-color: var(--border-focus);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input.error-border {
+  border-color: var(--error-color);
+}
+
+.field-error {
+  color: var(--error-color);
+  font-size: 12px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Checkbox */
+.remember-device {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  color: var(--text-gray);
+  font-size: 12.5px;
+  user-select: none;
+}
+
+.remember-device input {
+  accent-color: var(--accent-gold);
+  width: 15px;
+  height: 15px;
+}
+
+/* ===================================================
+   BUTTONS & DIVIDERS
+   =================================================== */
+.btn-gold {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--accent-gold);
+  color: #121214;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-gold:hover:not(:disabled) {
+  background-color: var(--accent-gold-hover);
+  transform: translateY(-0.5px);
+}
+
+.btn-gold:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(18, 18, 20, 0.3);
+  border-radius: 50%;
+  border-top-color: #121214;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.divider-row {
+  display: flex;
+  align-items: center;
+  margin: 28px 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.divider-text {
+  padding: 0 16px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* External Auth Options */
+.extra-options-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-outline-dark {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-white);
+  padding: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.btn-outline-dark:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: var(--text-gray);
+}
+
+.btn-outline-dark svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Alerts */
+.alert-message {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+}
+
+.alert-error {
+  background-color: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+
+/* ===================================================
+   FOOTER TEXT
+   =================================================== */
+.footer-text {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 13px;
+  color: var(--text-gray);
+}
+
+.footer-link {
+  color: var(--text-white);
+  text-decoration: underline;
+  transition: var(--transition);
+}
+
+.footer-link:hover {
+  color: var(--accent-gold);
+}
+
+/* ===================================================
+   DASHBOARD / PORTAL LAYOUT
+   =================================================== */
+.portal-layout {
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-page);
+  color: var(--text-white);
+  display: flex;
+  flex-direction: column;
+}
+
+.portal-nav {
+  height: 70px;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-card);
+}
+
+.portal-brand {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+}
+
+.portal-user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.portal-role-tag {
+  background-color: rgba(223, 186, 115, 0.1);
+  border: 1px solid rgba(223, 186, 115, 0.25);
+  color: var(--accent-gold);
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.8px;
+}
+
+.btn-portal-signout {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-gray);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-portal-signout:hover {
+  border-color: var(--text-white);
+  color: var(--text-white);
+}
+
+.portal-content {
+  flex: 1;
+  padding: 48px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.portal-welcome {
+  margin-bottom: 40px;
+}
+
+.portal-welcome-title {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.portal-welcome-desc {
+  font-size: 14px;
+  color: var(--text-gray);
+}
+
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.portal-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  transition: var(--transition);
+}
+
+.portal-card:hover {
+  border-color: var(--accent-gold);
+}
+
+.portal-card-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+.portal-card-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-gray);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.portal-card-value {
+  font-size: 24px;
+  font-weight: 700;
 }
