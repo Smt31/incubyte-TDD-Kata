@@ -11,7 +11,7 @@ import java.util.Date;
 
 /**
  * Service responsible for generating JWT tokens.
- * Uses HS256 algorithm with a configurable secret and expiration.
+ * Uses HS256 algorithm with a configurable secret and expiration from application.properties.
  */
 @Service
 public class JwtService {
@@ -26,12 +26,19 @@ public class JwtService {
      * Generates a signed JWT token for the given user email (used as the subject).
      */
     public String generateToken(String email) {
-        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(key)
+                .signWith(getSigningKey())
                 .compact();
+    }
+
+    /**
+     * Derives the HMAC-SHA256 signing key from the configured secret.
+     * Extracted as a helper to keep generateToken() clean and readable.
+     */
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 }

@@ -41,18 +41,12 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(user);
 
-        return UserResponse.builder()
-                .id(savedUser.getId())
-                .email(savedUser.getEmail())
-                .name(savedUser.getName())
-                .role(savedUser.getRole())
-                .createdAt(savedUser.getCreatedAt())
-                .build();
+        return mapToUserResponse(savedUser);
     }
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        // Find user — return same error for non-existent user and wrong password (prevents enumeration)
+        // Find user — same generic error for missing user and wrong password (prevents enumeration)
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(InvalidCredentialsException::new);
 
@@ -61,7 +55,28 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String token = jwtService.generateToken(user.getEmail());
+        return buildLoginResponse(user, token);
+    }
 
+    // ─── Private Helpers ──────────────────────────────────────────────────────
+
+    /**
+     * Maps a saved User entity to a UserResponse DTO (no password exposed).
+     */
+    private UserResponse mapToUserResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    /**
+     * Builds a LoginResponse combining user info with the generated JWT token.
+     */
+    private LoginResponse buildLoginResponse(User user, String token) {
         return LoginResponse.builder()
                 .token(token)
                 .email(user.getEmail())

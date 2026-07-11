@@ -18,9 +18,11 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+/**
+ * Integration tests for POST /api/auth/login endpoint (TDD - Phase 1B).
+ * Uses type-safe LoginRequest builders for all mock payloads.
+ */
 @SpringBootTest
-
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class LoginControllerTest {
