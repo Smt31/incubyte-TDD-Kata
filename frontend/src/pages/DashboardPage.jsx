@@ -289,16 +289,7 @@ export default function DashboardPage() {
             <div className="portal-card-title">Active Fleet</div>
             <div className="portal-card-value">{vehicles.length}</div>
           </div>
-          <div className="portal-card">
-            <div className="portal-card-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dfba73" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-            </div>
-            <div className="portal-card-title">Pending Delivery</div>
-            <div className="portal-card-value">0</div>
-          </div>
+
           <div className="portal-card">
             <div className="portal-card-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dfba73" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
