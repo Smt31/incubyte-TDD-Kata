@@ -360,9 +360,9 @@ export default function DashboardPage() {
                     }}
                     className="filter-price-input"
                   />
-                  <button 
-                    type="button" 
-                    className="btn-apply-price" 
+                  <button
+                    type="button"
+                    className="btn-apply-price"
                     title="Apply price filter"
                     onClick={() => {
                       setAppliedMinPrice(minPriceInput)
@@ -415,8 +415,8 @@ export default function DashboardPage() {
           ) : filteredVehicles.length === 0 ? (
             <div className="fleet-empty-state">
               <p>No vehicles match your search query or price limits.</p>
-              <button 
-                className="btn-clear-filters" 
+              <button
+                className="btn-clear-filters"
                 onClick={() => {
                   setSearchQuery('')
                   setMinPriceInput('')

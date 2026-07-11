@@ -100,11 +100,11 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
     fireEvent.click(addBtn)
 
     // Fill form
-    fireEvent.change(screen.getByPlaceholderText(/VIN/i), { target: { value: '1HGCR2F83JA111111' } })
-    fireEvent.change(screen.getByPlaceholderText(/Make/i), { target: { value: 'Lamborghini' } })
-    fireEvent.change(screen.getByPlaceholderText(/Model/i), { target: { value: 'Aventador' } })
-    fireEvent.change(screen.getByPlaceholderText(/Year/i), { target: { value: '2022' } })
-    fireEvent.change(screen.getByPlaceholderText(/Price/i), { target: { value: '380000' } })
+    fireEvent.change(screen.getByPlaceholderText('VIN (min 4 characters)'), { target: { value: '1HGCR2F83JA111111' } })
+    fireEvent.change(screen.getByPlaceholderText(/^Make$/), { target: { value: 'Lamborghini' } })
+    fireEvent.change(screen.getByPlaceholderText(/^Model$/), { target: { value: 'Aventador' } })
+    fireEvent.change(screen.getByPlaceholderText(/^Year$/), { target: { value: '2022' } })
+    fireEvent.change(screen.getByPlaceholderText(/^Price$/), { target: { value: '380000' } })
     fireEvent.change(screen.getByPlaceholderText(/SUV, Sedan, Coupe/i), { target: { value: 'Luxury' } })
     fireEvent.change(screen.getByPlaceholderText(/Initial Stock/i), { target: { value: '5' } })
 
@@ -346,13 +346,13 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
     fireEvent.click(editBtn)
 
     // Form fields should be pre-filled
-    expect(screen.getByPlaceholderText(/VIN/i).value).toBe('1HGCR2F83JA123456')
-    expect(screen.getByPlaceholderText(/Make/i).value).toBe('Porsche')
-    expect(screen.getByPlaceholderText(/Model/i).value).toBe('911')
+    expect(screen.getByPlaceholderText('VIN (min 4 characters)').value).toBe('1HGCR2F83JA123456')
+    expect(screen.getByPlaceholderText(/^Make$/).value).toBe('Porsche')
+    expect(screen.getByPlaceholderText(/^Model$/).value).toBe('911')
 
     // Change model and price
-    fireEvent.change(screen.getByPlaceholderText(/Model/i), { target: { value: '911 Turbo S' } })
-    fireEvent.change(screen.getByPlaceholderText(/Price/i), { target: { value: '210000' } })
+    fireEvent.change(screen.getByPlaceholderText(/^Model$/), { target: { value: '911 Turbo S' } })
+    fireEvent.change(screen.getByPlaceholderText(/^Price$/), { target: { value: '210000' } })
 
     // Click save changes
     const saveBtn = screen.getByRole('button', { name: /Save Changes/i })
@@ -567,7 +567,7 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
     localStorage.setItem('user', JSON.stringify({ name: 'Client User', role: 'USER', email: 'client@velodrive.com' }))
     localStorage.setItem('token', 'mock-user-token')
 
-    render(
+    const { container } = render(
       <MemoryRouter>
         <AuthProvider>
           <DashboardPage />
@@ -585,9 +585,9 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
 
     // Select Price: High to Low
     fireEvent.change(sortSelect, { target: { value: 'price-desc' } })
-    
+
     // Check that Ferrari is rendered before Porsche in the DOM
-    const cards = screen.getAllByClassName('fleet-card')
+    const cards = container.querySelectorAll('.fleet-card')
     expect(cards[0]).toHaveTextContent(/Ferrari Roma/i)
     expect(cards[1]).toHaveTextContent(/Porsche 911/i)
   })
@@ -626,7 +626,7 @@ describe('DashboardPage Vehicle CRUD & Role Access (TDD)', () => {
     fireEvent.change(screen.getByPlaceholderText(/Search by make/i), { target: { value: 'Lamborghini' } })
     fireEvent.change(screen.getByPlaceholderText(/Min Price/i), { target: { value: '50000' } })
     fireEvent.change(screen.getByPlaceholderText(/Max Price/i), { target: { value: '150000' } })
-    
+
     // Apply prices
     fireEvent.click(screen.getByTitle(/Apply price filter/i))
 

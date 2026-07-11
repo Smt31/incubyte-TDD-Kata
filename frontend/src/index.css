@@ -702,9 +702,9 @@ body {
 
 .admin-actions-row {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   border-top: 1px dashed var(--border-color);
   padding-top: 12px;
@@ -754,6 +754,8 @@ body {
   display: flex;
   gap: 6px;
   align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .restock-input {
@@ -815,8 +817,10 @@ body {
   border-radius: var(--radius-md);
   width: 100%;
   max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
   animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1086,6 +1090,9 @@ body {
   border-radius: var(--radius-sm);
   outline: none;
   transition: var(--transition);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .filter-search-input:focus {
@@ -1121,8 +1128,10 @@ body {
   font-size: 13.5px;
   border-radius: var(--radius-sm);
   width: 105px;
+  min-width: 0;
   outline: none;
   transition: var(--transition);
+  text-overflow: ellipsis;
 }
 
 .filter-price-input:focus {
@@ -1186,23 +1195,22 @@ body {
   .fleet-filters-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 10px;
   }
   .filters-controls-group {
-    flex-wrap: wrap;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     width: 100%;
   }
   .price-inputs-row {
-    flex: 1;
-    width: 100%;
+    grid-column: 1 / -1;
   }
   .filter-price-input {
     flex: 1;
     width: auto;
   }
   .sort-wrapper {
-    flex: 1;
     width: 100%;
   }
   .filter-sort-select {
@@ -1210,5 +1218,141 @@ body {
   }
   .btn-filter-reset {
     width: 100%;
+  }
+}
+
+/* ===================================================
+   MOBILE RESPONSIVE OVERRIDES
+   =================================================== */
+@media (max-width: 768px) {
+  /* Navbar */
+  .portal-nav {
+    padding: 0 16px;
+    height: auto;
+    min-height: 60px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .portal-user-info {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* Main content */
+  .portal-content {
+    padding: 24px 16px;
+  }
+  .portal-welcome-title {
+    font-size: 24px;
+  }
+  .portal-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  /* Stats cards */
+  .portal-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .portal-card {
+    padding: 20px;
+  }
+
+  /* Fleet grid */
+  .fleet-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .fleet-card-img-container {
+    height: 160px;
+  }
+  .fleet-card-details {
+    padding: 16px;
+  }
+
+  /* Admin action buttons: stack vertically */
+  .admin-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .btn-fleet-edit,
+  .btn-fleet-delete {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+  .restock-control {
+    width: 100%;
+  }
+  .restock-input {
+    flex: 1;
+    width: auto;
+  }
+  .btn-fleet-restock {
+    white-space: nowrap;
+  }
+
+  /* Modal adjustments for tablets */
+  .modal-container {
+    max-width: 95%;
+    margin: 20px;
+  }
+  .modal-form {
+    padding: 20px;
+  }
+
+  /* Toast notifications */
+  .toast-container {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+  }
+  .toast-message {
+    min-width: unset;
+    max-width: 100%;
+  }
+
+  /* Fleet section */
+  .fleet-section {
+    margin-top: 32px;
+  }
+  .fleet-title {
+    font-size: 20px;
+  }
+}
+
+/* Small phones only */
+@media (max-width: 480px) {
+  .modal-overlay {
+    align-items: flex-start;
+    padding: 0;
+  }
+  .modal-container {
+    max-width: 100%;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+  }
+  .modal-form {
+    padding: 16px;
+  }
+  .form-group-row-2col {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .modal-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .btn-modal-cancel,
+  .btn-modal-submit {
+    width: 100%;
+    text-align: center;
   }
 }
