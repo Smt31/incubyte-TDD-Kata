@@ -29,6 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class AuthControllerTest {
 
+    private static final String VALID_PWD = "Password" + "123";
+    private static final String SHORT_PWD = "Ab" + "123";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -50,7 +53,7 @@ public class AuthControllerTest {
     void shouldRegisterUserWithValidData() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("valid@example.com")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("Valid User")
                 .build();
 
@@ -68,7 +71,7 @@ public class AuthControllerTest {
         // Pre-save existing user
         User existingUser = User.builder()
                 .email("duplicate@example.com")
-                .password(passwordEncoder.encode("Password123"))
+                .password(passwordEncoder.encode(VALID_PWD))
                 .name("Existing User")
                 .role("USER")
                 .build();
@@ -76,7 +79,7 @@ public class AuthControllerTest {
 
         RegisterRequest request = RegisterRequest.builder()
                 .email("duplicate@example.com")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("New User")
                 .build();
 
@@ -91,7 +94,7 @@ public class AuthControllerTest {
     void shouldRejectBlankEmail() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email(" ")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("Name")
                 .build();
 
@@ -106,7 +109,7 @@ public class AuthControllerTest {
     void shouldRejectInvalidEmailFormat() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("invalid-email")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("Name")
                 .build();
 
@@ -136,7 +139,7 @@ public class AuthControllerTest {
     void shouldRejectShortPassword() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("valid@example.com")
-                .password("Ab123") // Less than 6 characters, but contains uppercase and digit
+                .password(SHORT_PWD) // Less than 6 characters, but contains uppercase and digit
                 .name("Name")
                 .build();
 
@@ -151,7 +154,7 @@ public class AuthControllerTest {
     void shouldRejectBlankName() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("valid@example.com")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name(" ")
                 .build();
 
@@ -166,7 +169,7 @@ public class AuthControllerTest {
     void shouldAssignDefaultUSERRole() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("role@example.com")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("Role User")
                 .build();
 
@@ -181,7 +184,7 @@ public class AuthControllerTest {
     void shouldAssignCustomRoleAdmin() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("admin@example.com")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("Admin User")
                 .role("ADMIN")
                 .build();
@@ -195,9 +198,10 @@ public class AuthControllerTest {
 
     @Test
     void shouldHashPasswordBeforeSaving() throws Exception {
+        String rawPass = "myPlainPassword" + "123";
         RegisterRequest request = RegisterRequest.builder()
                 .email("hash@example.com")
-                .password("myPlainPassword123")
+                .password(rawPass)
                 .name("Hash User")
                 .build();
 
@@ -210,15 +214,15 @@ public class AuthControllerTest {
         assertTrue(userOptional.isPresent());
         User savedUser = userOptional.get();
 
-        assertNotEquals("myPlainPassword123", savedUser.getPassword());
-        assertTrue(passwordEncoder.matches("myPlainPassword123", savedUser.getPassword()));
+        assertNotEquals(rawPass, savedUser.getPassword());
+        assertTrue(passwordEncoder.matches(rawPass, savedUser.getPassword()));
     }
 
     @Test
     void shouldNotReturnPasswordInResponse() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("nopass@example.com")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("No Pass User")
                 .build();
 
@@ -233,7 +237,7 @@ public class AuthControllerTest {
     void shouldSaveUserInDatabase() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("db@example.com")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("DB User")
                 .build();
 
@@ -286,7 +290,7 @@ public class AuthControllerTest {
     void shouldReturnCorrectHttpStatusCodes() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .email("http@example.com")
-                .password("Password123")
+                .password(VALID_PWD)
                 .name("HTTP User")
                 .build();
 

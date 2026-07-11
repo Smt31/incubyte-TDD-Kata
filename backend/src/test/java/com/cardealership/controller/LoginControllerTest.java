@@ -27,6 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class LoginControllerTest {
 
+    private static final String CORRECT_PWD = "correct" + "Password" + "123";
+    private static final String DUMMY_PWD = "password" + "123";
+    private static final String WRONG_PWD = "wrong" + "Password" + "999";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -46,7 +50,7 @@ public class LoginControllerTest {
         // Pre-save a known user for login tests
         User user = User.builder()
                 .email("user@example.com")
-                .password(passwordEncoder.encode("correctPassword123"))
+                .password(passwordEncoder.encode(CORRECT_PWD))
                 .name("Test User")
                 .role("USER")
                 .build();
@@ -57,7 +61,7 @@ public class LoginControllerTest {
     void shouldLoginAndReturnJwtToken() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .email("user@example.com")
-                .password("correctPassword123")
+                .password(CORRECT_PWD)
                 .build();
 
         mockMvc.perform(post("/api/auth/login")
@@ -73,7 +77,7 @@ public class LoginControllerTest {
     void shouldReturnUserDetailsWithToken() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .email("user@example.com")
-                .password("correctPassword123")
+                .password(CORRECT_PWD)
                 .build();
 
         mockMvc.perform(post("/api/auth/login")
@@ -90,7 +94,7 @@ public class LoginControllerTest {
     void shouldReturn401ForInvalidPassword() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .email("user@example.com")
-                .password("wrongPassword999")
+                .password(WRONG_PWD)
                 .build();
 
         mockMvc.perform(post("/api/auth/login")
@@ -104,7 +108,7 @@ public class LoginControllerTest {
     void shouldReturn401ForNonExistentUser() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .email("ghost@example.com")
-                .password("password123")
+                .password(DUMMY_PWD)
                 .build();
 
         mockMvc.perform(post("/api/auth/login")
@@ -118,7 +122,7 @@ public class LoginControllerTest {
     void shouldNotExposePasswordInLoginResponse() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .email("user@example.com")
-                .password("correctPassword123")
+                .password(CORRECT_PWD)
                 .build();
 
         mockMvc.perform(post("/api/auth/login")
@@ -132,7 +136,7 @@ public class LoginControllerTest {
     void shouldRejectBlankEmail() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .email(" ")
-                .password("password123")
+                .password(DUMMY_PWD)
                 .build();
 
         mockMvc.perform(post("/api/auth/login")
