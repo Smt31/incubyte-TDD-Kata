@@ -10,14 +10,17 @@ The entire project was developed following a strict **Test-Driven Development (T
 
 ## Live Demo
 
-| Service | URL |
-| :--- | :--- |
-| **Frontend (Vercel)** | [https://incubyte-kata-sarthak.vercel.app](https://incubyte-kata-sarthak.vercel.app) |
-| **Backend API (Render)** | [https://incubyte-backend-jw0o.onrender.com](https://incubyte-backend-jw0o.onrender.com) |
+## 🌐 Live Demo
 
-> **Demo Credentials:**  
-> **User** → `user@demo.com` / `User@123`  
-> **Admin** → `admin@demo.com` / `Admin@123`
+**Application:**  
+https://incubyte-kata-sarthak.vercel.app
+
+### Demo Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| User | `user@demo.com` | `User@123` |
+| Admin | `admin@demo.com` | `Admin@123` |
 
 ---
 
@@ -49,10 +52,12 @@ The entire project was developed following a strict **Test-Driven Development (T
 ## Application Screenshots
 
 ### Login Page
-![Login Page](screenshots/login-page.png)
+<img width="1919" height="1079" alt="Screenshot 2026-07-12 091325" src="https://github.com/user-attachments/assets/208c8b83-cb49-41c8-aaab-28b3738aac2d" />
+
 
 ### Admin Dashboard — Vehicle Catalog & Inventory Management
-![Admin Dashboard](screenshots/admin-dashboard.png)
+<img width="903" height="753" alt="image" src="https://github.com/user-attachments/assets/29f5586a-1084-49fb-bc18-fbee53b721b2" />
+
 
 ---
 
@@ -77,11 +82,13 @@ The following screenshots were captured during actual development and demonstrat
 
 **Red Phase** — Tests written first, all failing before implementation:
 
-![TDD Red Phase - Failing Tests](screenshots/tdd-red-phase.png)
+<img width="940" height="529" alt="image" src="https://github.com/user-attachments/assets/63d9be54-d3de-47bd-954f-438dab7a96bb" />
+
 
 **Green Phase** — Implementation written to make all tests pass:
 
-![TDD Green Phase - Passing Tests](screenshots/tdd-green-phase.png)
+<img width="940" height="501" alt="image" src="https://github.com/user-attachments/assets/e1a93e0f-3399-418d-85ad-0db296507a32" />
+
 
 **Refactor Phase** — Code cleaned and restructured while ensuring all tests continued to pass. This phase focused on improving readability, extracting reusable methods, and following SOLID principles — without changing any external behavior.
 
@@ -96,7 +103,8 @@ The backend test suite was executed using JaCoCo to measure code coverage after 
 
 #### JaCoCo Coverage Summary
 
-![JaCoCo Coverage Summary](screenshots/jacoco-coverage.png)
+<img width="1919" height="484" alt="Screenshot 2026-07-12 101040" src="https://github.com/user-attachments/assets/0e66af3d-964e-484b-9304-6a22f4ff5a00" />
+
 
 ---
 
@@ -295,6 +303,39 @@ incubyte-TDD-Kata/
 ├── .env                        # Environment variables (not committed)
 └── README.md                   # You are here!
 ```
+---
+
+## REST API Endpoints
+
+### Authentication
+
+| Method | Endpoint | Description | Access |
+| :---: | :--- | :--- | :---: |
+| `POST` | `/api/auth/register` | Register a new user | Public |
+| `POST` | `/api/auth/login` | Authenticate user and return JWT | Public |
+
+### Vehicle Management
+
+| Method | Endpoint | Description | Access |
+| :---: | :--- | :--- | :---: |
+| `GET` | `/api/vehicles` | Retrieve all available vehicles | Authenticated |
+| `GET` | `/api/vehicles/search` | Search vehicles by make, model, category, or price range | Authenticated |
+| `POST` | `/api/vehicles` | Add a new vehicle | Admin |
+| `PUT` | `/api/vehicles/{id}` | Update vehicle details | Admin |
+| `DELETE` | `/api/vehicles/{id}` | Delete a vehicle | Admin |
+
+### Inventory Management
+
+| Method | Endpoint | Description | Access |
+| :---: | :--- | :--- | :---: |
+| `POST` | `/api/vehicles/{id}/purchase` | Purchase a vehicle and decrease stock quantity | Authenticated |
+| `POST` | `/api/vehicles/{id}/restock` | Restock a vehicle and increase stock quantity | Admin |
+
+### System
+
+| Method | Endpoint | Description | Access |
+| :---: | :--- | :--- | :---: |
+| `GET` | `/api/health` | Health check endpoint for uptime monitoring | Public |
 
 ---
 
@@ -330,36 +371,3 @@ In alignment with modern development practices, I leveraged AI tools as a pair-p
 
 I treated AI as a pair-programming assistant rather than an autonomous code generator. It accelerated development and learning, but the final design decisions, implementation details, testing strategy, and debugging remained my responsibility.
 
----
-
-## REST API Endpoints
-
-### Authentication
-
-| Method | Endpoint | Description | Access |
-| :---: | :--- | :--- | :---: |
-| `POST` | `/api/auth/register` | Register a new user | Public |
-| `POST` | `/api/auth/login` | Authenticate user and return JWT | Public |
-
-### Vehicle Management
-
-| Method | Endpoint | Description | Access |
-| :---: | :--- | :--- | :---: |
-| `GET` | `/api/vehicles` | Retrieve all available vehicles | Authenticated |
-| `GET` | `/api/vehicles/search` | Search vehicles by make, model, category, or price range | Authenticated |
-| `POST` | `/api/vehicles` | Add a new vehicle | Admin |
-| `PUT` | `/api/vehicles/{id}` | Update vehicle details | Admin |
-| `DELETE` | `/api/vehicles/{id}` | Delete a vehicle | Admin |
-
-### Inventory Management
-
-| Method | Endpoint | Description | Access |
-| :---: | :--- | :--- | :---: |
-| `POST` | `/api/vehicles/{id}/purchase` | Purchase a vehicle and decrease stock quantity | Authenticated |
-| `POST` | `/api/vehicles/{id}/restock` | Restock a vehicle and increase stock quantity | Admin |
-
-### System
-
-| Method | Endpoint | Description | Access |
-| :---: | :--- | :--- | :---: |
-| `GET` | `/api/health` | Health check endpoint for uptime monitoring | Public |
